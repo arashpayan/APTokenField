@@ -1,0 +1,278 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		5B0D4A6E1497503B00A89219 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B0D4A6D1497503B00A89219 /* UIKit.framework */; };
+		5B0D4A701497503B00A89219 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B0D4A6F1497503B00A89219 /* Foundation.framework */; };
+		5B0D4A721497503B00A89219 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B0D4A711497503B00A89219 /* CoreGraphics.framework */; };
+		5B0D4A781497503B00A89219 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5B0D4A761497503B00A89219 /* InfoPlist.strings */; };
+		5B0D4A7A1497503B00A89219 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B0D4A791497503B00A89219 /* main.m */; };
+		5B0D4A7E1497503B00A89219 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B0D4A7D1497503B00A89219 /* AppDelegate.m */; };
+		5B0D4A8A149750C800A89219 /* APTokenField.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B0D4A89149750C800A89219 /* APTokenField.m */; };
+		5BE470F414A99C2D008836CE /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BE470F314A99C2D008836CE /* QuartzCore.framework */; };
+		5BE470F814A9BE8F008836CE /* APTokenFieldController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BE470F714A9BE8F008836CE /* APTokenFieldController.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		5B0D4A691497503B00A89219 /* APTokenField.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = APTokenField.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5B0D4A6D1497503B00A89219 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		5B0D4A6F1497503B00A89219 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		5B0D4A711497503B00A89219 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		5B0D4A751497503B00A89219 /* APTokenField-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "APTokenField-Info.plist"; sourceTree = "<group>"; };
+		5B0D4A771497503B00A89219 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		5B0D4A791497503B00A89219 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		5B0D4A7B1497503B00A89219 /* APTokenField-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "APTokenField-Prefix.pch"; sourceTree = "<group>"; };
+		5B0D4A7C1497503B00A89219 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		5B0D4A7D1497503B00A89219 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		5B0D4A88149750C800A89219 /* APTokenField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTokenField.h; sourceTree = "<group>"; };
+		5B0D4A89149750C800A89219 /* APTokenField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APTokenField.m; sourceTree = "<group>"; };
+		5BE470F314A99C2D008836CE /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		5BE470F614A9BE8F008836CE /* APTokenFieldController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTokenFieldController.h; sourceTree = "<group>"; };
+		5BE470F714A9BE8F008836CE /* APTokenFieldController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APTokenFieldController.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5B0D4A661497503B00A89219 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5BE470F414A99C2D008836CE /* QuartzCore.framework in Frameworks */,
+				5B0D4A6E1497503B00A89219 /* UIKit.framework in Frameworks */,
+				5B0D4A701497503B00A89219 /* Foundation.framework in Frameworks */,
+				5B0D4A721497503B00A89219 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5B0D4A5E1497503B00A89219 = {
+			isa = PBXGroup;
+			children = (
+				5B0D4A731497503B00A89219 /* APTokenField */,
+				5B0D4A6C1497503B00A89219 /* Frameworks */,
+				5B0D4A6A1497503B00A89219 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5B0D4A6A1497503B00A89219 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5B0D4A691497503B00A89219 /* APTokenField.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5B0D4A6C1497503B00A89219 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5BE470F314A99C2D008836CE /* QuartzCore.framework */,
+				5B0D4A6D1497503B00A89219 /* UIKit.framework */,
+				5B0D4A6F1497503B00A89219 /* Foundation.framework */,
+				5B0D4A711497503B00A89219 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5B0D4A731497503B00A89219 /* APTokenField */ = {
+			isa = PBXGroup;
+			children = (
+				5B0D4A7C1497503B00A89219 /* AppDelegate.h */,
+				5B0D4A7D1497503B00A89219 /* AppDelegate.m */,
+				5B0D4A741497503B00A89219 /* Supporting Files */,
+				5B0D4A88149750C800A89219 /* APTokenField.h */,
+				5B0D4A89149750C800A89219 /* APTokenField.m */,
+				5BE470F614A9BE8F008836CE /* APTokenFieldController.h */,
+				5BE470F714A9BE8F008836CE /* APTokenFieldController.m */,
+			);
+			path = APTokenField;
+			sourceTree = "<group>";
+		};
+		5B0D4A741497503B00A89219 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				5B0D4A751497503B00A89219 /* APTokenField-Info.plist */,
+				5B0D4A761497503B00A89219 /* InfoPlist.strings */,
+				5B0D4A791497503B00A89219 /* main.m */,
+				5B0D4A7B1497503B00A89219 /* APTokenField-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5B0D4A681497503B00A89219 /* APTokenField */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5B0D4A811497503B00A89219 /* Build configuration list for PBXNativeTarget "APTokenField" */;
+			buildPhases = (
+				5B0D4A651497503B00A89219 /* Sources */,
+				5B0D4A661497503B00A89219 /* Frameworks */,
+				5B0D4A671497503B00A89219 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = APTokenField;
+			productName = APTokenField;
+			productReference = 5B0D4A691497503B00A89219 /* APTokenField.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5B0D4A601497503B00A89219 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
+			buildConfigurationList = 5B0D4A631497503B00A89219 /* Build configuration list for PBXProject "APTokenField" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 5B0D4A5E1497503B00A89219;
+			productRefGroup = 5B0D4A6A1497503B00A89219 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5B0D4A681497503B00A89219 /* APTokenField */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		5B0D4A671497503B00A89219 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5B0D4A781497503B00A89219 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5B0D4A651497503B00A89219 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5B0D4A7A1497503B00A89219 /* main.m in Sources */,
+				5B0D4A7E1497503B00A89219 /* AppDelegate.m in Sources */,
+				5B0D4A8A149750C800A89219 /* APTokenField.m in Sources */,
+				5BE470F814A9BE8F008836CE /* APTokenFieldController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		5B0D4A761497503B00A89219 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5B0D4A771497503B00A89219 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		5B0D4A7F1497503B00A89219 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		5B0D4A801497503B00A89219 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		5B0D4A821497503B00A89219 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "APTokenField/APTokenField-Prefix.pch";
+				INFOPLIST_FILE = "APTokenField/APTokenField-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		5B0D4A831497503B00A89219 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "APTokenField/APTokenField-Prefix.pch";
+				INFOPLIST_FILE = "APTokenField/APTokenField-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5B0D4A631497503B00A89219 /* Build configuration list for PBXProject "APTokenField" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5B0D4A7F1497503B00A89219 /* Debug */,
+				5B0D4A801497503B00A89219 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5B0D4A811497503B00A89219 /* Build configuration list for PBXNativeTarget "APTokenField" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5B0D4A821497503B00A89219 /* Debug */,
+				5B0D4A831497503B00A89219 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 5B0D4A601497503B00A89219 /* Project object */;
+}
