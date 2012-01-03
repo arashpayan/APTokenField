@@ -29,7 +29,7 @@
     UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:controller];
     [self.window addSubview:nc.view];
     
-    self.window.backgroundColor = [UIColor whiteColor];
+    self.window.backgroundColor = [UIColor greenColor];
     [self.window makeKeyAndVisible];
     return YES;
 }

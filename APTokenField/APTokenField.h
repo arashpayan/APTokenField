@@ -6,31 +6,39 @@
 //  Copyright (c) 2011 Arash Payan. All rights reserved.
 //
 
-@protocol APTokenDataSource;
+@protocol APTokenFieldDataSource;
 @class APShadowView;
 #import <UIKit/UIKit.h>
 
-@interface APTokenField : UIControl <UITableViewDataSource> {
-    id<APTokenDataSource> tokenFieldDataSource;
+@interface APTokenField : UIControl <UITableViewDataSource, UITextFieldDelegate, UITableViewDelegate> {
+    id<APTokenFieldDataSource> tokenFieldDataSource;
     APShadowView *shadowView;
+    UITextField *textField;
     UIView *tokenContainer;
     NSMutableArray *tokens;
     UIFont *font;
+    UITableView *resultsTable;
+    NSString *labelText;
+    UILabel *label;
+    NSUInteger numberOfResults;
 }
 
-@property (nonatomic, readonly) UITableView *tableView;
-@property (nonatomic, assign) id<APTokenDataSource> tokenFieldDataSource;
+@property (nonatomic, copy) NSString *labelText;
+@property (nonatomic, readonly) UITableView *resultsTable;
+@property (nonatomic, assign) id<APTokenFieldDataSource> tokenFieldDataSource;
 @property (nonatomic, retain) UIFont *font;
+- (void)addObject:(id)object;
 
 @end
 
 
-@protocol APTokenDataSource <NSObject>
+@protocol APTokenFieldDataSource <NSObject>
 
 @required
 - (NSString*)tokenField:(APTokenField*)tokenField titleForObject:(id)anObject;
 - (NSUInteger)numberOfResultsInTokenField:(APTokenField*)tokenField;
-- (id)tokenField:(APTokenField*)tokenField objectAtIndex:(NSUInteger)index;
+- (id)tokenField:(APTokenField*)tokenField objectAtResultsIndex:(NSUInteger)index;
+- (void)tokenField:(APTokenField*)tokenField searchQuery:(NSString*)query;
 
 @optional
 /* If you don't implement this method, then the results table will use
