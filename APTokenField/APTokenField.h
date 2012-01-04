@@ -7,11 +7,13 @@
 //
 
 @protocol APTokenFieldDataSource;
+@protocol APTokenFieldDelegate;
 @class APShadowView;
 #import <UIKit/UIKit.h>
 
 @interface APTokenField : UIControl <UITableViewDataSource, UITextFieldDelegate, UITableViewDelegate> {
     id<APTokenFieldDataSource> tokenFieldDataSource;
+    id<APTokenFieldDelegate> tokenFieldDelegate;
     APShadowView *shadowView;
     UITextField *textField;
     UIView *tokenContainer;
@@ -21,13 +23,18 @@
     NSString *labelText;
     UILabel *label;
     NSUInteger numberOfResults;
+    UIView *rightView;
 }
 
+@property (nonatomic, retain) UIFont *font;
 @property (nonatomic, copy) NSString *labelText;
 @property (nonatomic, readonly) UITableView *resultsTable;
+@property (nonatomic, retain) UIView *rightView;
 @property (nonatomic, assign) id<APTokenFieldDataSource> tokenFieldDataSource;
-@property (nonatomic, retain) UIFont *font;
+@property (nonatomic, assign) id<APTokenFieldDelegate> tokenFieldDelegate;
 - (void)addObject:(id)object;
+- (void)removeObject:(id)object;
+- (NSUInteger)objectCount;
 
 @end
 
@@ -47,5 +54,20 @@
 - (UITableViewCell*)tokenField:(APTokenField*)tokenField
                      tableView:(UITableView*)tableView
                   cellForIndex:(NSUInteger)index;
+- (CGFloat)resultRowsHeightForTokenField:(APTokenField*)tokenField;
+
+@end
+
+
+@protocol APTokenFieldDelegate <NSObject>
+
+@optional
+/* Called when the user adds an object from the results list. */
+- (void)tokenField:(APTokenField*)tokenField didAddObject:(id)object;
+/* Called when the user deletes an object from the token field. */
+- (void)tokenField:(APTokenField*)tokenField didRemoveObject:(id)object;
+- (void)tokenFieldDidEndEditing:(APTokenField*)tokenField;
+/* Called when the user taps the 'enter'. */
+- (void)tokenFieldDidReturn:(APTokenField*)tokenField;
 
 @end

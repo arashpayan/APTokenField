@@ -27,12 +27,7 @@
 {
     tokenField = [[APTokenField alloc] initWithFrame:CGRectMake(0, 0, 320, 460)];
     tokenField.tokenFieldDataSource = statesDataSource;
-    tokenField.labelText = @"To:";
-    
-    [tokenField addObject:@"Arash Payan"];
-    [tokenField addObject:@"Kanoong Yang"];
-    [tokenField addObject:@"Shoua Yang"];
-    [tokenField addObject:@"Chong Lee"];
+    tokenField.labelText = @"States:";
     
     self.view = tokenField;
 }

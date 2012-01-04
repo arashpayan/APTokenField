@@ -45,8 +45,8 @@ static NSString *const kHiddenCharacter = @"\u200B";
 
 @end
 
-#define TOKEN_HORIZONTAL_MARGIN     8.5
-#define TOKEN_VERTICAL_MARGIN       2.5
+#define TOKEN_HZ_PADDING            8.5
+#define TOKEN_VT_PADDING            2.5
 
 @interface APTokenView : UIView {
     NSString *title;
@@ -92,7 +92,7 @@ static NSString *const kHiddenCharacter = @"\u200B";
     
     CGSize titleSize = [title sizeWithFont:tokenField.font];
     
-    CGRect bounds = CGRectMake(0, 0, titleSize.width + TOKEN_HORIZONTAL_MARGIN*2.0, titleSize.height + TOKEN_VERTICAL_MARGIN*2.0);
+    CGRect bounds = CGRectMake(0, 0, titleSize.width + TOKEN_HZ_PADDING*2.0, titleSize.height + TOKEN_VT_PADDING*2.0);
     CGRect textBounds = bounds;
     textBounds.origin.x = (bounds.size.width - titleSize.width) / 2;
     textBounds.origin.y += 4;
@@ -151,8 +151,8 @@ static NSString *const kHiddenCharacter = @"\u200B";
 
 - (CGSize)desiredSize {
     CGSize titleSize = [title sizeWithFont:tokenField.font];
-    titleSize.width += TOKEN_HORIZONTAL_MARGIN*2.0;
-    titleSize.height += TOKEN_VERTICAL_MARGIN*2.0 + 2;
+    titleSize.width += TOKEN_HZ_PADDING*2.0;
+    titleSize.height += TOKEN_VT_PADDING*2.0 + 2;
     
     return titleSize;
 }
@@ -180,11 +180,13 @@ static NSString *const kHiddenCharacter = @"\u200B";
 @synthesize font;
 @synthesize labelText;
 @synthesize resultsTable;
+@synthesize rightView;
 @synthesize shadowView;
 @synthesize textField;
 @synthesize tokenContainer;
 @synthesize tokens;
 @synthesize tokenFieldDataSource;
+@synthesize tokenFieldDelegate;
 
 - (id)init {
     return [self initWithFrame:CGRectZero];
@@ -213,6 +215,7 @@ static NSString *const kHiddenCharacter = @"\u200B";
         [self addSubview:shadowView];
         
         self.textField = [[[UITextField alloc] initWithFrame:CGRectZero] autorelease];
+        textField.text = kHiddenCharacter;
         textField.delegate = self;
         textField.font = font;
         textField.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -228,6 +231,9 @@ static NSString *const kHiddenCharacter = @"\u200B";
 }
 
 - (void)addObject:(id)object {
+    if (object == nil)
+        [NSException raise:@"IllegalArgumentException" format:@"You can't add a nil object to an APTokenField"];
+    
     NSString *title = nil;
     if (tokenFieldDataSource != nil)
         title = [tokenFieldDataSource tokenField:self titleForObject:object];
@@ -244,6 +250,27 @@ static NSString *const kHiddenCharacter = @"\u200B";
     [tokenContainer addSubview:token];
     
     [self setNeedsLayout];
+}
+
+- (void)removeObject:(id)object {
+    if (object == nil)
+        return;
+    
+    for (int i=0; i<[tokens count]; i++)
+    {
+        APTokenView *t = [tokens objectAtIndex:i];
+        if ([t.object  isEqual:object])
+        {
+            [t removeFromSuperview];
+            [tokens removeObjectAtIndex:i];
+            [self setNeedsLayout];
+            
+            if ([tokenFieldDelegate respondsToSelector:@selector(tokenField:didRemoveObject:)])
+                [tokenFieldDelegate tokenField:self didRemoveObject:object];
+            
+            return;
+        }
+    }
 }
 
 - (BOOL)canBecomeFirstResponder {
@@ -266,16 +293,13 @@ static NSString *const kHiddenCharacter = @"\u200B";
     return [textField resignFirstResponder];
 }
 
-#define CONTAINER_MARGIN            12
-#define TOKEN_HORIZONTAL_PADDING    8
-//#define TOKEN_VERTICAL_PADDING      8
+#define CONTAINER_PADDING            12
 #define MINIMUM_TEXTFIELD_WIDTH     40
-#define LABEL_MARGINS               8
+#define CONTAINER_ELEMENT_VT_MARGIN 8
+#define CONTAINER_ELEMENT_HZ_MARGIN 8
 
 - (void)layoutSubviews {
     CGRect bounds = self.bounds;
-    
-    // figure out the layout of each token
     
     // calculate the starting x (containerWidth) and y (containerHeight) for our layout
     float containerWidth = 0;
@@ -283,43 +307,57 @@ static NSString *const kHiddenCharacter = @"\u200B";
     {
         [label sizeToFit];
         CGRect labelBounds = label.bounds;
-        label.frame = CGRectMake(12, 11, labelBounds.size.width, labelBounds.size.height);
-        containerWidth = CGRectGetMaxX(label.frame)+CONTAINER_MARGIN;
+        // we want the base of the label text to be the same as the token label base
+        label.frame = CGRectMake(CONTAINER_PADDING,
+                                 /* the +2 is because [label sizeToFit] isn't a tight fit (2 pixels of gap) */
+                                 CONTAINER_ELEMENT_VT_MARGIN+TOKEN_VT_PADDING+font.lineHeight-label.font.lineHeight+2,
+                                 labelBounds.size.width,
+                                 labelBounds.size.height);
+        containerWidth = CGRectGetMaxX(label.frame)+CONTAINER_PADDING;
     }
     else
-        containerWidth = CONTAINER_MARGIN;
-    float containerHeight = TOKEN_HORIZONTAL_PADDING;
+        containerWidth = CONTAINER_PADDING;
+    float containerHeight = CONTAINER_ELEMENT_VT_MARGIN;
     APTokenView *lastToken = nil;
+    float rightViewWidth = 0;
+    if (rightView)
+        rightViewWidth = rightView.bounds.size.width+CONTAINER_ELEMENT_HZ_MARGIN;
+    // layout each of the tokens
     for (APTokenView *token in tokens)
     {
         CGSize desiredTokenSize = [token desiredSize];
-        if (containerWidth + desiredTokenSize.width > bounds.size.width-CONTAINER_MARGIN)
+        if (containerWidth + desiredTokenSize.width > bounds.size.width-CONTAINER_PADDING-rightViewWidth)
         {
-            containerHeight += desiredTokenSize.height + TOKEN_HORIZONTAL_PADDING;
-            containerWidth = CONTAINER_MARGIN;
+            containerHeight += desiredTokenSize.height + CONTAINER_ELEMENT_VT_MARGIN;
+            containerWidth = CONTAINER_PADDING;
         }
         
         token.frame = CGRectMake(containerWidth, containerHeight, desiredTokenSize.width, desiredTokenSize.height);
-        containerWidth += desiredTokenSize.width + TOKEN_HORIZONTAL_PADDING;
+        containerWidth += desiredTokenSize.width + CONTAINER_ELEMENT_HZ_MARGIN;
         
         lastToken = token;
     }
     
     // let's place the textfield now
-    if (containerWidth + MINIMUM_TEXTFIELD_WIDTH > bounds.size.width-CONTAINER_MARGIN)
+    if (containerWidth + MINIMUM_TEXTFIELD_WIDTH > bounds.size.width-CONTAINER_PADDING-rightViewWidth)
     {
-        containerHeight += lastToken.bounds.size.height+TOKEN_HORIZONTAL_PADDING;
-        containerWidth = CONTAINER_MARGIN;
+        containerHeight += lastToken.bounds.size.height+CONTAINER_ELEMENT_VT_MARGIN;
+        containerWidth = CONTAINER_PADDING;
     }
-    textField.frame = CGRectMake(containerWidth, containerHeight+TOKEN_VERTICAL_MARGIN, CGRectGetMaxX(bounds)-CONTAINER_MARGIN-containerWidth, font.lineHeight);
+    textField.frame = CGRectMake(containerWidth, containerHeight+TOKEN_VT_PADDING, CGRectGetMaxX(bounds)-CONTAINER_PADDING-containerWidth, font.lineHeight);
     
     // now that we know the size of all the tokens, we can set the frame for our container
     // if there are some results, then we'll only show the last row of the container, otherwise, we'll show all of it
-    float minContainerHeight = font.lineHeight+TOKEN_VERTICAL_MARGIN;
+    float minContainerHeight = font.lineHeight+TOKEN_VT_PADDING*2.0+2+CONTAINER_ELEMENT_VT_MARGIN*2.0;
     if (numberOfResults == 0)
-        tokenContainer.frame = CGRectMake(0, 0, bounds.size.width, MAX(minContainerHeight, containerHeight+lastToken.bounds.size.height+TOKEN_HORIZONTAL_PADDING));
+        tokenContainer.frame = CGRectMake(0, 0, bounds.size.width, MAX(minContainerHeight, containerHeight+lastToken.bounds.size.height+CONTAINER_ELEMENT_VT_MARGIN));
     else
-        tokenContainer.frame = CGRectMake(0, -containerHeight+TOKEN_HORIZONTAL_PADDING, bounds.size.width, containerHeight+lastToken.bounds.size.height+TOKEN_HORIZONTAL_PADDING);
+        tokenContainer.frame = CGRectMake(0, -containerHeight+CONTAINER_ELEMENT_VT_MARGIN, bounds.size.width, MAX(minContainerHeight, containerHeight+lastToken.bounds.size.height+CONTAINER_ELEMENT_VT_MARGIN));
+    
+    /* If there's a rightView, place it at the bottom right of the tokenContainer.
+     We made sure to provide enough space for it in the logic above, so it should fit just right. */
+    rightView.center = CGPointMake(bounds.size.width-CONTAINER_PADDING-rightView.bounds.size.width/2.0,
+                                   CGRectGetHeight(tokenContainer.frame)-CONTAINER_PADDING-rightView.bounds.size.height/2.0);
     
     // the shadow view always goes below the token container
     shadowView.frame = CGRectMake(0,
@@ -341,10 +379,8 @@ static NSString *const kHiddenCharacter = @"\u200B";
         APTokenView *t = [tokens objectAtIndex:i];
         if (t.highlighted)
         {
-            [t removeFromSuperview];
-            [tokens removeObjectAtIndex:i];
+            [self removeObject:t.object];
             textField.hidden = NO;
-            [self setNeedsLayout];
             return;
         }
     }
@@ -445,6 +481,16 @@ static NSString *const kHiddenCharacter = @"\u200B";
     [tokenFieldDataSource tokenField:self searchQuery:@""];
     textField.text = kHiddenCharacter;
     [resultsTable reloadData];
+    
+    if ([tokenFieldDelegate respondsToSelector:@selector(tokenField:didAddObject:)])
+        [tokenFieldDelegate tokenField:self didAddObject:object];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([tokenFieldDataSource respondsToSelector:@selector(resultRowsHeightForTokenField:)])
+        return [tokenFieldDataSource resultRowsHeightForTokenField:self];
+    
+    return 44;
 }
 
 #pragma mark - UITextFieldDelegate
@@ -454,6 +500,23 @@ static NSString *const kHiddenCharacter = @"\u200B";
     {
         [self userTappedBackspaceOnEmptyField];
         return NO;
+    }
+    
+    /* If the textfield is hidden, it means that a token is highlighted. And if the user
+     entered a character, then we need to delete that token and begin a new search. */
+    if (textField.hidden)
+    {
+        // find the highlighted token, remove it, then make the textfield visible again
+        for (int i=0; i<[tokens count]; i++)
+        {
+            APTokenView *t = [tokens objectAtIndex:i];
+            if (t.highlighted)
+            {
+                [self removeObject:t.object];
+                break;
+            }
+        }
+        textField.hidden = NO;
     }
 
     NSString *newString = nil;
@@ -497,6 +560,18 @@ static NSString *const kHiddenCharacter = @"\u200B";
         textField.text = kHiddenCharacter;
 }
 
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    if ([tokenFieldDelegate respondsToSelector:@selector(tokenFieldDidEndEditing:)])
+        [tokenFieldDelegate tokenFieldDidEndEditing:self];
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    if ([tokenFieldDelegate respondsToSelector:@selector(tokenFieldDidReturn:)])
+        [tokenFieldDelegate tokenFieldDidReturn:self];
+    
+    return YES;
+}
+
 #pragma mark - Accessors
 
 - (void)setTokenFieldDataSource:(id<APTokenFieldDataSource>)aTokenFieldDataSource {
@@ -533,11 +608,29 @@ static NSString *const kHiddenCharacter = @"\u200B";
     if ([labelText length] != 0)
     {
         label = [[UILabel alloc] initWithFrame:CGRectZero];
-        label.font = [UIFont systemFontOfSize:font.pointSize*1.1];
+        // the label's font is 15% bigger than the token font
+        label.font = [UIFont systemFontOfSize:font.pointSize*1.15];
         label.text = labelText;
         label.textColor = [UIColor grayColor];
-        label.backgroundColor = [UIColor redColor];
+        label.backgroundColor = [UIColor clearColor];
         [tokenContainer addSubview:label];
+    }
+    
+    [self setNeedsLayout];
+}
+
+- (void)setRightView:(UIView *)aView {
+    if (aView == rightView)
+        return;
+    
+    [rightView removeFromSuperview];
+    [rightView release];
+    rightView = nil;
+    
+    if (aView)
+    {
+        rightView = [aView retain];
+        [tokenContainer addSubview:rightView];
     }
     
     [self setNeedsLayout];
