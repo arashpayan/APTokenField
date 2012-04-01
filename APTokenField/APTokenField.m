@@ -1,15 +1,74 @@
-//
-//  APTokenField.m
-//  APTokenField
-//
-//  Created by Arash Payan on 12/13/11.
-//  Copyright (c) 2011 Arash Payan. All rights reserved.
-//
+/*
+ * Copyright (c) 2012, Arash Payan
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or
+ * without modification, are permitted provided that the following
+ * conditions are met:
+ * 
+ * +Redistributions of source code must retain the above copyright
+ *  notice, this list of conditions and the following disclaimer.
+ * +Redistributions in binary form must reproduce the above
+ *  copyright notice, this list of conditions and the following
+ *  disclaimer in the documentation and/or other materials provided
+ *  with the distribution.
+ * +Neither the name of Arash Payan nor the names of its 
+ *  contributors may be used to endorse or promote products derived
+ *  from this software without specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+ * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 #import "APTokenField.h"
 #import <QuartzCore/QuartzCore.h>
 
 static NSString *const kHiddenCharacter = @"\u200B";
+
+@interface APTextField : UITextField {}
+@end
+
+@implementation APTextField
+
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
+    if ([self.text isEqualToString:kHiddenCharacter])
+    {
+        if (action == @selector(paste:))
+            return YES;
+        else
+            return NO;
+    }
+    else
+        return [super canPerformAction:action withSender:sender];
+}
+
+@end
+
+@interface APSolidLine : UIView
+@end
+
+@implementation APSolidLine
+
+- (void)drawRect:(CGRect)rect {
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    
+    CGFloat lineColor[4] = {204.0/255.0, 204.0/255.0, 204.0/255.0, 1};
+    CGContextSetFillColor(ctx, lineColor);
+    CGContextFillRect(ctx, rect);
+}
+
+@end
 
 @interface APShadowView : UIView {
     CAGradientLayer *shadowLayer;
@@ -102,7 +161,6 @@ static NSString *const kHiddenCharacter = @"\u200B";
     CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
     CGPoint endPoint = CGPointMake(1, self.bounds.size.height + 10);
     
-    // Draw the outline.
     CGContextSaveGState(context);
     CGContextBeginPath(context);
     CGContextAddArc(context, arcValue, arcValue, arcValue, (M_PI / 2), (3 * M_PI / 2), NO);
@@ -168,8 +226,9 @@ static NSString *const kHiddenCharacter = @"\u200B";
 
 @interface APTokenField ()
 
+@property (nonatomic, retain) UIView *backingView;
 @property (nonatomic, retain) APShadowView *shadowView;
-@property (nonatomic, retain) UITextField *textField;
+@property (nonatomic, retain) APTextField *textField;
 @property (nonatomic, retain) UIView *tokenContainer;
 @property (nonatomic, retain) NSMutableArray *tokens;
 
@@ -177,6 +236,7 @@ static NSString *const kHiddenCharacter = @"\u200B";
 
 @implementation APTokenField
 
+@synthesize backingView;
 @synthesize font;
 @synthesize labelText;
 @synthesize resultsTable;
@@ -195,13 +255,17 @@ static NSString *const kHiddenCharacter = @"\u200B";
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor clearColor];
-        numberOfResults = 0;
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         
+        self.backingView = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
+        backingView.backgroundColor = [UIColor whiteColor];
+        [self addSubview:backingView];
+        
+        numberOfResults = 0;
         self.font = [UIFont systemFontOfSize:14];
         
         self.tokenContainer = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
-        tokenContainer.backgroundColor = [UIColor whiteColor];
+        tokenContainer.backgroundColor = [UIColor clearColor];
         UITapGestureRecognizer *tapGesture = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(userTappedTokenContainer)] autorelease];
         [tokenContainer addGestureRecognizer:tapGesture];
         [self addSubview:tokenContainer];
@@ -214,7 +278,7 @@ static NSString *const kHiddenCharacter = @"\u200B";
         self.shadowView = [[[APShadowView alloc] initWithFrame:CGRectZero] autorelease];
         [self addSubview:shadowView];
         
-        self.textField = [[[UITextField alloc] initWithFrame:CGRectZero] autorelease];
+        self.textField = [[[APTextField alloc] initWithFrame:CGRectZero] autorelease];
         textField.text = kHiddenCharacter;
         textField.delegate = self;
         textField.font = font;
@@ -225,6 +289,9 @@ static NSString *const kHiddenCharacter = @"\u200B";
         [tokenContainer addSubview:textField];
         
         self.tokens = [[[NSMutableArray alloc] init] autorelease];
+        
+        solidLine = [[APSolidLine alloc] initWithFrame:CGRectZero];
+        [self addSubview:solidLine];
     }
     
     return self;
@@ -249,6 +316,9 @@ static NSString *const kHiddenCharacter = @"\u200B";
     [tokens addObject:token];
     [tokenContainer addSubview:token];
     
+    [tokenFieldDataSource tokenField:self searchQuery:@""];
+    textField.text = kHiddenCharacter;
+    
     [self setNeedsLayout];
 }
 
@@ -271,6 +341,15 @@ static NSString *const kHiddenCharacter = @"\u200B";
             return;
         }
     }
+}
+
+- (NSUInteger)objectCount {
+    return [tokens count];
+}
+
+- (id)objectAtIndex:(NSUInteger)index {
+    APTokenView *t = [tokens objectAtIndex:index];
+    return t.object;
 }
 
 - (BOOL)canBecomeFirstResponder {
@@ -349,15 +428,32 @@ static NSString *const kHiddenCharacter = @"\u200B";
     // now that we know the size of all the tokens, we can set the frame for our container
     // if there are some results, then we'll only show the last row of the container, otherwise, we'll show all of it
     float minContainerHeight = font.lineHeight+TOKEN_VT_PADDING*2.0+2+CONTAINER_ELEMENT_VT_MARGIN*2.0;
-    if (numberOfResults == 0)
-        tokenContainer.frame = CGRectMake(0, 0, bounds.size.width, MAX(minContainerHeight, containerHeight+lastToken.bounds.size.height+CONTAINER_ELEMENT_VT_MARGIN));
+    float tokenContainerWidth = 0;
+    if (rightView)
+        tokenContainerWidth = bounds.size.width-5-rightView.bounds.size.width-5;
     else
-        tokenContainer.frame = CGRectMake(0, -containerHeight+CONTAINER_ELEMENT_VT_MARGIN, bounds.size.width, MAX(minContainerHeight, containerHeight+lastToken.bounds.size.height+CONTAINER_ELEMENT_VT_MARGIN));
+        tokenContainerWidth = bounds.size.width;
+    if (numberOfResults == 0)
+        tokenContainer.frame = CGRectMake(0, 0, tokenContainerWidth, MAX(minContainerHeight, containerHeight+lastToken.bounds.size.height+CONTAINER_ELEMENT_VT_MARGIN));
+    else
+        tokenContainer.frame = CGRectMake(0, -containerHeight+CONTAINER_ELEMENT_VT_MARGIN, tokenContainerWidth, MAX(minContainerHeight, containerHeight+lastToken.bounds.size.height+CONTAINER_ELEMENT_VT_MARGIN));
+    
+    // layout the backing view
+    backingView.frame = CGRectMake(tokenContainer.frame.origin.x,
+                                   tokenContainer.frame.origin.y,
+                                   bounds.size.width,
+                                   tokenContainer.frame.size.height);
     
     /* If there's a rightView, place it at the bottom right of the tokenContainer.
      We made sure to provide enough space for it in the logic above, so it should fit just right. */
     rightView.center = CGPointMake(bounds.size.width-CONTAINER_PADDING-rightView.bounds.size.width/2.0,
-                                   CGRectGetHeight(tokenContainer.frame)-CONTAINER_PADDING-rightView.bounds.size.height/2.0);
+                                   CGRectGetMaxY(tokenContainer.frame)-5-rightView.bounds.size.height/2.0/*CGRectGetHeight(tokenContainer.frame)-5-rightView.bounds.size.height/2.0*/);
+    
+    // the solid line should be 1 pt at the bottom of the token container
+    solidLine.frame = CGRectMake(0,
+                                 CGRectGetMaxY(tokenContainer.frame)-1,
+                                 bounds.size.width,
+                                 1);
     
     // the shadow view always goes below the token container
     shadowView.frame = CGRectMake(0,
@@ -373,6 +469,9 @@ static NSString *const kHiddenCharacter = @"\u200B";
 }
 
 - (void)userTappedBackspaceOnEmptyField {
+    if (!self.enabled)
+        return;
+    
     // check if there are any highlighted tokens. If so, delete it and reveal the textfield again
     for (int i=0; i<[tokens count]; i++)
     {
@@ -396,6 +495,9 @@ static NSString *const kHiddenCharacter = @"\u200B";
 }
 
 - (void)userTappedTokenContainer {
+    if (!self.enabled)
+        return;
+    
     if (![self isFirstResponder])
         [self becomeFirstResponder];
     
@@ -415,6 +517,9 @@ static NSString *const kHiddenCharacter = @"\u200B";
 }
 
 - (void)userTappedToken:(UITapGestureRecognizer*)gestureRecognizer {
+    if (!self.enabled)
+        return;
+    
     APTokenView *token = (APTokenView*)gestureRecognizer.view;
     
     // if any other token is highlighted, remove the highlight
@@ -465,6 +570,7 @@ static NSString *const kHiddenCharacter = @"\u200B";
     
     resultsTable.hidden = (numberOfResults == 0);
     shadowView.hidden = (numberOfResults == 0);
+    solidLine.hidden = (numberOfResults != 0);
     
     return numberOfResults;
 }
@@ -478,8 +584,6 @@ static NSString *const kHiddenCharacter = @"\u200B";
     id object = [tokenFieldDataSource tokenField:self objectAtResultsIndex:indexPath.row];
     [self addObject:object];
     
-    [tokenFieldDataSource tokenField:self searchQuery:@""];
-    textField.text = kHiddenCharacter;
     [resultsTable reloadData];
     
     if ([tokenFieldDelegate respondsToSelector:@selector(tokenField:didAddObject:)])
@@ -496,10 +600,22 @@ static NSString *const kHiddenCharacter = @"\u200B";
 #pragma mark - UITextFieldDelegate
 
 - (BOOL)textField:(UITextField*)aTextField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString*)string {
+    if (!self.enabled)
+        return NO;
+    
     if ([aTextField.text isEqualToString:kHiddenCharacter] && [string length] == 0)
     {
         [self userTappedBackspaceOnEmptyField];
         return NO;
+    }
+    
+    if ([tokenFieldDelegate respondsToSelector:@selector(tokenField:shouldChangeCharactersInRange:replacementString:)])
+    {
+        BOOL shouldChange = [tokenFieldDelegate tokenField:self
+                             shouldChangeCharactersInRange:range
+                                         replacementString:string];
+        if (!shouldChange)
+            return NO;
     }
     
     /* If the textfield is hidden, it means that a token is highlighted. And if the user
@@ -566,6 +682,9 @@ static NSString *const kHiddenCharacter = @"\u200B";
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    if (!self.enabled)
+        return NO;
+
     if ([tokenFieldDelegate respondsToSelector:@selector(tokenFieldDidReturn:)])
         [tokenFieldDelegate tokenFieldDidReturn:self];
     
@@ -630,10 +749,17 @@ static NSString *const kHiddenCharacter = @"\u200B";
     if (aView)
     {
         rightView = [aView retain];
-        [tokenContainer addSubview:rightView];
+        [self addSubview:rightView];
     }
     
     [self setNeedsLayout];
+}
+
+- (NSString*)text {
+    if ([textField.text isEqualToString:kHiddenCharacter])
+        return @"";
+    
+    return textField.text;
 }
 
 #pragma mark - Memory Management
@@ -644,9 +770,12 @@ static NSString *const kHiddenCharacter = @"\u200B";
     self.font = nil;
     self.shadowView = nil;
     [resultsTable release];
+    [rightView release];
+    rightView = nil;
     self.textField = nil;
     self.tokenContainer = nil;
     self.tokens = nil;
+    self.backingView = nil;
     
     [super dealloc];
 }

@@ -135,7 +135,7 @@
 		5B0D4A601497503B00A89219 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 			};
 			buildConfigurationList = 5B0D4A631497503B00A89219 /* Build configuration list for PBXProject "APTokenField" */;
 			compatibilityVersion = "Xcode 3.2";
