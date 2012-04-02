@@ -7,7 +7,6 @@ APTokenField is a class that behaves similarly to the 'To:' field in iOS's MFMai
 
 Getting Started
 ---------------
-All the functionality of this library is contained in `APTokenField.h` and `APTokenField.m`. The rest of the files are just part of the sample project and can be referred to as necessary.
 1. Add `APTokenField.h` and `APTokenField.m` into your project.
 2. Add the `CoreGraphics` and `QuartzCore` frameworks to your project.
 3. Create an object that conforms to the `APTokenFieldDataSource` protocol to use as the data source for your `APTokenField` instance.
