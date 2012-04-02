@@ -1,6 +1,6 @@
 Introduction
 ------------
-APTokenField is a class that behaves similarly to the 'To:' field in iOS's MFMailComposeViewController. Similar functionality can be found in [Three20] [three20]'s `TTPickerTextField`, but it's hard to use and requires integrating the entire Three20 framework into your app to take advantage of it. It's been tested on iOS 4.0 and and later (including iPad), and the code is released under the BSD 3-clause license. To find out more, check out the [project homepage] [homepage].
+APTokenField is a class that behaves similarly to the 'To:' field in iOS's MFMailComposeViewController. Similar functionality can be found in [Three20] [three20]'s `TTPickerTextField`, but it's hard to use and requires integrating the entire Three20 framework into your app... so this is better :-). APTokenField has been tested on iOS 4.0 and and later (including iPad), and the code is released under the BSD 3-clause license. To find out more, check out the [project homepage] [homepage].
 
 [![](http://arashpayan.com/blog/wp-content/uploads/2012/04/demo_screen_shot-200x300.png)](http://arashpayan.com/blog/wp-content/uploads/2012/04/demo_screen_shot.png)
 [![](http://arashpayan.com/blog/wp-content/uploads/2012/04/line2_screen_shot-200x300.png)](http://arashpayan.com/blog/wp-content/uploads/2012/04/line2_screen_shot.png)
@@ -10,7 +10,7 @@ Getting Started
 1. Add `APTokenField.h` and `APTokenField.m` into your project.
 2. Add the `CoreGraphics` and `QuartzCore` frameworks to your project.
 3. Create an object that conforms to the `APTokenFieldDataSource` protocol to use as the data source for your `APTokenField` instance.
-4. Create an instance of an `APTokenFieldView`, assign your `APTokenFieldDataSource` to it's `tokenFieldDataSoure` property then add the token field to your view hierarchy.
+4. Create an instance of an `APTokenField`, assign your `APTokenFieldDataSource` to it's `tokenFieldDataSoure` property then add the token field to your view hierarchy.
 
 License
 -------
